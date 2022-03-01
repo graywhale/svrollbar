@@ -53,8 +53,13 @@
   let startY = 0
   let timer = 0
   let visible = alwaysVisible
+  let windowScrollEnabled = false
 
-  $: windowScrollEnabled = document.scrollingElement === viewport
+  // Fixed: 'document is not defined' issue
+  let ref = null
+  if (ref) {
+    $: windowScrollEnabled = document.scrollingElement === viewport
+  }
 
   $: teardownViewport = setupViewport(viewport)
   $: teardownContents = setupContents(contents)
@@ -231,7 +236,7 @@
 </script>
 
 {#if visible}
-  <div class="v-scrollbar" class:fixed={windowScrollEnabled} style="height: {trackHeight}px">
+  <div bind:this={ref} class="v-scrollbar" class:fixed={windowScrollEnabled} style="height: {trackHeight}px">
     <div
       bind:this={vTrack}
       class="v-track"
